@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marquinho Modas | Moda para toda a família</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            brand: {
+              black: '#111111',
+              dark: '#1a1a1a',
+              gold: '#cba052',
+              light: '#f9f9f9',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+    .glass-dark { background: rgba(17, 17, 17, 0.95); backdrop-filter: blur(10px); }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-brand-light text-gray-900 font-sans antialiased flex flex-col min-h-screen">
+
+  <header class="sticky top-0 z-40 glass-dark border-b border-gray-800 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <button onclick="toggleMobileMenu(true)" class="lg:hidden p-2 text-gray-300 hover:text-white transition-colors">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+
+        <div class="flex-1 lg:flex-none flex justify-center lg:justify-start">
+          <a href="#" class="flex items-center gap-3 group">
+            <div class="w-10 h-10 rounded-full border-2 border-brand-gold flex items-center justify-center bg-black">
+              <span class="font-serif text-xl text-white group-hover:text-brand-gold transition-colors">MM</span>
+            </div>
+            <div class="hidden sm:flex flex-col">
+              <span class="font-serif text-lg tracking-wider text-white leading-none uppercase">Marquinho</span>
+              <span class="font-serif text-sm tracking-[0.2em] text-brand-gold leading-none mt-1 uppercase">Modas</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="flex items-center gap-4 text-gray-300">
+          <button onclick="triggerAdminAccess()" class="hidden md:flex p-2 hover:text-brand-gold transition-colors" title="Painel Admin">
+            <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+          </button>
+          
+          <button onclick="openAuthModal()" class="p-2 hover:text-brand-gold transition-colors flex items-center gap-2">
+            <i data-lucide="user" class="w-5 h-5"></i>
+            <span id="userGreeting" class="hidden md:inline text-xs font-semibold uppercase">Entrar</span>
+          </button>
+
+          <button onclick="toggleCartDrawer(true)" class="p-2 hover:text-brand-gold transition-colors relative">
+            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+            <span id="cartBadge" class="absolute top-0 right-0 bg-brand-gold text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div id="mobileMenuDrawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="toggleMobileMenu(false)"></div>
+    <div class="fixed inset-y-0 left-0 max-w-xs w-full bg-brand-black shadow-2xl flex flex-col justify-between transform transition-transform">
+      <div>
+        <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full border border-brand-gold flex items-center justify-center">
+              <span class="font-serif text-sm text-white">MM</span>
+            </div>
+            <span class="font-serif text-white tracking-widest uppercase">Menu</span>
+          </div>
+          <button onclick="toggleMobileMenu(false)" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
+        </div>
+        <nav class="p-6 text-sm font-medium tracking-wider uppercase flex flex-col gap-6">
+          <a href="#" onclick="toggleMobileMenu(false); filterCategory('Promocoes'); document.getElementById('catalogo').scrollIntoView()" class="text-brand-gold font-bold">🔥 Promoções</a>
+          <a href="#" onclick="toggleMobileMenu(false); filterCategory('Feminina'); document.getElementById('catalogo').scrollIntoView()" class="text-gray-300 hover:text-brand-gold">Moda Feminina</a>
+          <a href="#" onclick="toggleMobileMenu(false); filterCategory('Masculina'); document.getElementById('catalogo').scrollIntoView()" class="text-gray-300 hover:text-brand-gold">Moda Masculina</a>
+          <a href="#" onclick="toggleMobileMenu(false); filterCategory('Infantil'); document.getElementById('catalogo').scrollIntoView()" class="text-gray-300 hover:text-brand-gold">Moda Infantil</a>
+          <a href="#" onclick="toggleMobileMenu(false); filterCategory('Fitness'); document.getElementById('catalogo').scrollIntoView()" class="text-gray-300 hover:text-brand-gold">Moda Fitness</a>
+          <a href="#" onclick="toggleMobileMenu(false); filterCategory('Calçados'); document.getElementById('catalogo').scrollIntoView()" class="text-gray-300 hover:text-brand-gold">Calçados (Tênis)</a>
+        </nav>
+      </div>
+      <div class="p-6 border-t border-gray-800">
+        <button onclick="toggleMobileMenu(false); triggerAdminAccess()" class="flex items-center gap-2 text-xs text-brand-gold uppercase tracking-widest font-bold w-full">
+          <i data-lucide="settings" class="w-4 h-4"></i> Painel do Lojista
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <main class="flex-grow">
+    <!-- Carrossel Restaurado -->
+    <section class="relative w-full h-[50vh] md:h-[70vh] bg-gray-900 overflow-hidden group">
+      <div id="carouselSlides" class="flex w-full h-full transition-transform duration-700 ease-in-out">
+        <div class="min-w-full h-full relative">
+          <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover opacity-70">
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 bg-black/40">
+            <span class="text-brand-gold text-sm font-bold tracking-[0.3em] uppercase mb-3">Oferta Especial</span>
+            <h2 class="font-serif text-4xl md:text-6xl text-white mb-4">Promoção Exclusiva</h2>
+            <button onclick="filterCategory('Promocoes'); document.getElementById('catalogo').scrollIntoView()" class="bg-brand-gold text-black px-8 py-3.5 text-sm uppercase tracking-widest font-bold hover:bg-yellow-600 transition-colors rounded-sm shadow-lg">Ver Promoções</button>
+          </div>
+        </div>
+        <div class="min-w-full h-full relative">
+          <img src="https://images.unsplash.com/photo-1514989940723-e8e51635b782?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover opacity-70">
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 bg-black/50">
+            <h2 class="font-serif text-4xl md:text-6xl text-white mb-4">Novos Tênis Premium</h2>
+            <button onclick="filterCategory('Calçados'); document.getElementById('catalogo').scrollIntoView()" class="bg-white text-black px-8 py-3.5 text-sm uppercase tracking-widest font-bold hover:bg-gray-200 transition-colors rounded-sm shadow-lg">Ver Modelos</button>
+          </div>
+        </div>
+        <div class="min-w-full h-full relative">
+          <img src="https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover opacity-80">
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 bg-black/40">
+            <h2 class="font-serif text-4xl md:text-6xl text-white mb-4">Nova Coleção Masculina</h2>
+            <button onclick="filterCategory('Masculina'); document.getElementById('catalogo').scrollIntoView()" class="bg-brand-black text-white border border-brand-black px-8 py-3.5 text-sm uppercase tracking-widest font-bold hover:border-white transition-colors rounded-sm shadow-lg">Descobrir</button>
+          </div>
+        </div>
+        <div class="min-w-full h-full relative">
+          <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover opacity-70">
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 bg-black/30">
+            <h2 class="font-serif text-4xl md:text-6xl text-white mb-4">Lançamentos Femininos</h2>
+            <button onclick="filterCategory('Feminina'); document.getElementById('catalogo').scrollIntoView()" class="bg-brand-gold text-black px-8 py-3.5 text-sm uppercase tracking-widest font-bold hover:bg-yellow-600 transition-colors rounded-sm shadow-lg">Ver Lançamentos</button>
+          </div>
+        </div>
+      </div>
+      
+      <button onclick="prevSlide()" class="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 bg-black/40 text-white rounded-full flex items-center justify-center hover:bg-brand-gold hover:text-black transition-all md:opacity-0 group-hover:opacity-100 z-10 backdrop-blur-sm border border-white/20"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
+      <button onclick="nextSlide()" class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 bg-black/40 text-white rounded-full flex items-center justify-center hover:bg-brand-gold hover:text-black transition-all md:opacity-0 group-hover:opacity-100 z-10 backdrop-blur-sm border border-white/20"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
+      
+      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-10">
+        <button onclick="goToSlide(0)" class="carousel-dot w-8 h-1.5 rounded-full bg-brand-gold transition-all"></button>
+        <button onclick="goToSlide(1)" class="carousel-dot w-2 h-1.5 rounded-full bg-white bg-opacity-50 hover:bg-white transition-all"></button>
+        <button onclick="goToSlide(2)" class="carousel-dot w-2 h-1.5 rounded-full bg-white bg-opacity-50 hover:bg-white transition-all"></button>
+        <button onclick="goToSlide(3)" class="carousel-dot w-2 h-1.5 rounded-full bg-white bg-opacity-50 hover:bg-white transition-all"></button>
+      </div>
+    </section>
+
+    <!-- Catálogo Restaurado -->
+    <section id="catalogo" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="text-center mb-10">
+        <h2 class="font-serif text-3xl md:text-4xl text-brand-black mb-4">Destaques da Loja</h2>
+        <div class="w-16 h-1 bg-brand-gold mx-auto"></div>
+      </div>
+
+      <div class="flex items-center gap-3 overflow-x-auto pb-4 mb-8 hide-scrollbar text-sm font-medium justify-start md:justify-center">
+        <button onclick="filterCategory('Todos')" class="cat-btn bg-brand-black text-white px-5 py-2 rounded-full whitespace-nowrap transition-all">Todos</button>
+        <button onclick="filterCategory('Promocoes')" class="cat-btn bg-white text-amber-600 px-5 py-2 rounded-full whitespace-nowrap border border-gray-200 font-semibold transition-all">🔥 Promoções</button>
+        <button onclick="filterCategory('Feminina')" class="cat-btn bg-white text-gray-600 px-5 py-2 rounded-full whitespace-nowrap border border-gray-200 transition-all">Feminina</button>
+        <button onclick="filterCategory('Masculina')" class="cat-btn bg-white text-gray-600 px-5 py-2 rounded-full whitespace-nowrap border border-gray-200 transition-all">Masculina</button>
+        <button onclick="filterCategory('Infantil')" class="cat-btn bg-white text-gray-600 px-5 py-2 rounded-full whitespace-nowrap border border-gray-200 transition-all">Infantil</button>
+        <button onclick="filterCategory('Fitness')" class="cat-btn bg-white text-gray-600 px-5 py-2 rounded-full whitespace-nowrap border border-gray-200 transition-all">Fitness</button>
+        <button onclick="filterCategory('Calçados')" class="cat-btn bg-white text-gray-600 px-5 py-2 rounded-full whitespace-nowrap border border-gray-200 transition-all">Calçados</button>
+      </div>
+
+      <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"></div>
+    </section>
+  </main>
+
+  <!-- Modal Detalhes -->
+  <div id="productDetailModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeProductDetailModal()"></div>
+    <div class="relative bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl rounded-sm p-6 md:p-10">
+      <button onclick="closeProductDetailModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black z-10"><i data-lucide="x" class="w-6 h-6"></i></button>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div class="aspect-[3/4] bg-gray-100 overflow-hidden rounded-sm relative">
+          <img id="modalProdImg" src="" class="w-full h-full object-cover">
+          <span id="modalProdBadge" class="absolute top-3 left-3 bg-brand-gold text-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest hidden">Promoção</span>
+        </div>
+        <div class="flex flex-col justify-between h-full space-y-6">
+          <div>
+            <span id="modalProdCategory" class="text-xs uppercase font-bold tracking-widest text-gray-400"></span>
+            <h3 id="modalProdName" class="font-serif text-2xl md:text-3xl text-black mt-1 mb-3"></h3>
+            <div class="flex items-center gap-3 mb-4">
+              <p id="modalProdPrice" class="text-2xl font-bold text-black"></p>
+              <p id="modalProdOldPrice" class="text-sm text-gray-400 line-through hidden"></p>
+            </div>
+            <p id="modalProdDesc" class="text-sm text-gray-600 leading-relaxed"></p>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">Tamanho:</label>
+            <div id="modalProdSizes" class="flex flex-wrap gap-2 mb-6"></div>
+            <button onclick="addCurrentProductToCart()" class="w-full bg-brand-black text-white py-4 text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors">Adicionar à Sacola</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sacola -->
+  <div id="cartDrawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="toggleCartDrawer(false)"></div>
+    <div class="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col">
+      <div class="p-5 border-b border-gray-200 flex items-center justify-between">
+        <h3 class="font-serif text-xl font-semibold text-brand-black flex items-center gap-2"><i data-lucide="shopping-bag" class="w-5 h-5 text-brand-gold"></i> Sacola</h3>
+        <button onclick="toggleCartDrawer(false)" class="text-gray-400 hover:text-black"><i data-lucide="x" class="w-6 h-6"></i></button>
+      </div>
+      <div id="cartItemsList" class="flex-1 overflow-y-auto p-5 divide-y divide-gray-100"></div>
+      <div class="p-6 bg-gray-50 border-t border-gray-200 space-y-4">
+        <div class="flex justify-between font-serif font-bold text-black text-lg"><span>Total</span><span id="cartTotal">R$ 0,00</span></div>
+        <button onclick="handleCheckout()" class="w-full bg-brand-black text-white py-4 text-xs uppercase font-bold tracking-widest hover:bg-gray-800">Finalizar Compra</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth -->
+  <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeAuthModal()"></div>
+    <div class="relative bg-white w-full max-w-md p-8 shadow-2xl rounded-sm">
+      <div class="text-center mb-6">
+        <div class="w-12 h-12 mx-auto bg-black text-white rounded-full flex items-center justify-center font-serif text-xl border-2 border-brand-gold mb-3">MM</div>
+        <h3 class="font-serif text-xl text-black">Identificação do Cliente</h3>
+        <p class="text-xs text-gray-500 mt-1">Cadastre-se para validar seu celular e compras</p>
+      </div>
+      <div class="space-y-3">
+        <input type="text" id="authName" placeholder="Nome Completo" class="w-full border-b border-gray-300 py-2 text-sm outline-none bg-transparent">
+        <input type="text" id="authCpf" placeholder="CPF (Ex: 000.000.000-00)" class="w-full border-b border-gray-300 py-2 text-sm outline-none bg-transparent">
+        <input type="text" id="authPhone" placeholder="WhatsApp / Celular (Com DDD)" class="w-full border-b border-gray-300 py-2 text-sm outline-none bg-transparent">
+        <input type="email" id="authEmail" placeholder="E-mail" class="w-full border-b border-gray-300 py-2 text-sm outline-none bg-transparent">
+        <button onclick="registrarOuLogar()" class="w-full bg-brand-black text-white py-3 text-xs uppercase tracking-widest font-bold mt-4 hover:bg-gray-800">Cadastrar / Entrar</button>
+      </div>
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black"><i data-lucide="x" class="w-5 h-5"></i></button>
+    </div>
+  </div>
+
+  <!-- Checkout Completo Restrito a Franca -->
+  <div id="checkoutModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeCheckoutModal()"></div>
+    <div class="relative bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl rounded-sm p-6 md:p-8">
+      <h3 class="font-serif text-2xl text-black mb-4 text-center">Finalizar Pedido</h3>
+      
+      <div class="mb-6 space-y-3">
+        <h4 class="text-sm font-bold uppercase tracking-wider border-b pb-2">Envio Exclusivo para Franca-SP</h4>
+        <select id="chkTipoEnvio" class="w-full border p-2.5 text-sm rounded bg-gray-50 outline-none" onchange="atualizarFreteSistema()">
+          <option value="retirada">Retirada na Loja Física (Grátis)</option>
+          <option value="motoboy">Motoboy Local - Franca (Taxa fixa R$ 10,00)</option>
+          <option value="uber">Uber Flash - Franca (Taxa fixa R$ 15,00)</option>
+        </select>
+
+        <div id="boxEndereco" class="grid grid-cols-2 gap-2 hidden">
+          <input type="text" id="chkCep" placeholder="CEP" class="border p-2.5 text-sm bg-gray-50 rounded outline-none">
+          <input type="text" value="Franca - SP" readonly class="border p-2.5 text-sm bg-gray-200 rounded text-gray-500 cursor-not-allowed">
+          <input type="text" id="chkBairro" placeholder="Bairro" class="border p-2.5 text-sm bg-gray-50 rounded outline-none">
+          <input type="text" id="chkRuaNum" placeholder="Rua e Número" class="border p-2.5 text-sm bg-gray-50 rounded outline-none">
+        </div>
+        <div id="freteCalculadoBox" class="p-2 bg-black text-brand-gold text-xs font-bold text-center rounded">Frete: R$ 0,00</div>
+      </div>
+
+      <div class="mb-6">
+        <h4 class="text-sm font-bold uppercase tracking-wider border-b pb-2 mb-3">Forma de Pagamento</h4>
+        <div class="grid grid-cols-3 gap-2 mb-3">
+          <button onclick="setPagamento('pix')" id="pay-pix" class="py-2 border bg-black text-white text-xs font-bold uppercase rounded transition-colors">PIX</button>
+          <button onclick="setPagamento('cartao')" id="pay-cartao" class="py-2 border text-gray-700 text-xs font-bold uppercase rounded transition-colors">Cartão</button>
+          <button onclick="setPagamento('parcelado')" id="pay-parcelado" class="py-2 border text-amber-700 border-amber-600 text-xs font-bold uppercase rounded transition-colors">Parcelado</button>
+        </div>
+        
+        <div id="boxParcelas" class="hidden p-4 bg-amber-50 border border-amber-200 rounded text-sm">
+          <label class="block text-xs font-bold text-amber-900 mb-2 uppercase">Escolha as parcelas:</label>
+          <select id="chkQtdParcelas" class="w-full border border-amber-300 p-2 rounded bg-white outline-none">
+            <option value="2">2x sem juros</option>
+            <option value="3">3x sem juros</option>
+            <option value="4">4x sem juros</option>
+          </select>
+          <p class="text-[10px] text-amber-700 mt-2">*Você será notificado via WhatsApp antes de cada débito programado.</p>
+        </div>
+      </div>
+
+      <button onclick="finalizarPedidoOficial()" class="w-full bg-brand-black text-white py-4 text-xs uppercase font-bold tracking-widest hover:bg-gray-800 transition-colors">Confirmar e Enviar via WhatsApp</button>
+      <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black"><i data-lucide="x" class="w-5 h-5"></i></button>
+    </div>
+  </div>
+
+  <!-- Admin Auth -->
+  <div id="adminAuthModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeAdminAuthModal()"></div>
+    <div class="relative bg-brand-black w-full max-w-sm p-8 shadow-2xl rounded-sm border border-gray-800 text-white">
+      <h3 class="font-serif text-xl mb-4 text-center">Área do Lojista</h3>
+      <input type="password" id="adminPassword" placeholder="Senha" class="w-full border-b border-gray-700 py-3 text-sm bg-transparent text-center tracking-widest mb-4 outline-none">
+      <button onclick="verifyAdminPassword()" class="w-full bg-brand-gold text-black py-3 text-xs uppercase font-bold">Acessar Painel</button>
+      <button onclick="closeAdminAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+    </div>
+  </div>
+
+  <!-- Painel Admin -->
+  <div id="adminModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeAdminModal()"></div>
+    <div class="relative bg-gray-50 w-full max-w-6xl h-[90vh] shadow-2xl rounded-lg overflow-hidden flex flex-col">
+      <div class="bg-black text-white p-5 flex justify-between items-center shrink-0">
+        <h2 class="font-serif text-lg tracking-wide">Painel Administrativo da Loja</h2>
+        <button onclick="closeAdminModal()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
+      </div>
+      <div class="flex bg-gray-200 border-b text-xs font-bold uppercase overflow-x-auto">
+        <button onclick="switchTab('vendas')" id="t-vendas" class="px-6 py-3 bg-white text-black border-b-2 border-brand-gold whitespace-nowrap">Novas Vendas</button>
+        <button onclick="switchTab('clientes')" id="t-clientes" class="px-6 py-3 text-gray-600 whitespace-nowrap">Usuários Cadastrados</button>
+        <button onclick="switchTab('parcelas')" id="t-parcelas" class="px-6 py-3 text-amber-700 whitespace-nowrap">Gestão de Parcelas</button>
+      </div>
+      
+      <div class="p-6 overflow-y-auto flex-1 bg-white relative">
+        <!-- Vendas Tab -->
+        <div id="tab-content-vendas" class="tab-pane space-y-4">
+          <table class="w-full text-left text-sm whitespace-nowrap">
+            <thead class="bg-gray-100 text-xs uppercase">
+              <tr>
+                <th class="p-3">Data</th>
+                <th class="p-3">Cliente</th>
+                <th class="p-3">Envio</th>
+                <th class="p-3">Valor Total</th>
+                <th class="p-3">Status</th>
+                <th class="p-3 text-center">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tableVendasBody" class="divide-y"></tbody>
+          </table>
+        </div>
+        
+        <!-- Clientes Tab -->
+        <div id="tab-content-clientes" class="tab-pane space-y-4 hidden">
+          <table class="w-full text-left text-sm whitespace-nowrap">
+            <thead class="bg-gray-100 text-xs uppercase">
+              <tr>
+                <th class="p-3">ID / Nome</th>
+                <th class="p-3">CPF</th>
+                <th class="p-3">Celular (WhatsApp)</th>
+                <th class="p-3">E-mail</th>
+              </tr>
+            </thead>
+            <tbody id="tableClientesBody" class="divide-y"></tbody>
+          </table>
+        </div>
+        
+        <!-- Parcelas Tab -->
+        <div id="tab-content-parcelas" class="tab-pane space-y-4 hidden">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-xs font-bold uppercase text-amber-800">Controle de Débitos e Lembretes Automáticos</h3>
+          </div>
+          <table class="w-full text-left text-sm whitespace-nowrap">
+            <thead class="bg-amber-50 text-amber-900 text-xs uppercase">
+              <tr>
+                <th class="p-3">Cliente</th>
+                <th class="p-3">Parcela</th>
+                <th class="p-3">Valor</th>
+                <th class="p-3">Vencimento</th>
+                <th class="p-3">Automação de Cobrança</th>
+              </tr>
+            </thead>
+            <tbody id="tableParcelasBody" class="divide-y"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Detalhes da Venda -->
+  <div id="adminSaleDetailModal" class="absolute inset-0 z-50 flex items-center justify-center p-4 bg-black/60 hidden">
+    <div class="bg-white w-full max-w-2xl shadow-2xl rounded-sm overflow-hidden flex flex-col max-h-full">
+      <div class="bg-brand-black text-white p-4 flex justify-between items-center">
+        <h3 class="font-serif text-lg">Detalhes do Pedido <span id="detSaleId" class="text-brand-gold text-sm ml-2"></span></h3>
+        <button onclick="closeSaleDetail()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="p-6 overflow-y-auto space-y-6 text-sm">
+        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded border">
+          <div><p class="text-xs text-gray-500 uppercase font-bold">Cliente</p><p id="detSaleClient" class="font-semibold"></p></div>
+          <div><p class="text-xs text-gray-500 uppercase font-bold">Pagamento</p><p id="detSalePay" class="font-semibold uppercase"></p></div>
+          <div class="col-span-2">
+            <p class="text-xs text-gray-500 uppercase font-bold flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Endereço p/ Entrega (Uber/99)</p>
+            <p id="detSaleAddress" class="font-semibold text-brand-black mt-1 bg-yellow-100 p-2 rounded border border-yellow-300"></p>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold uppercase border-b pb-2 mb-3">Itens Comprados</h4>
+          <ul id="detSaleItems" class="space-y-2 divide-y"></ul>
+        </div>
+        <div class="flex justify-between items-center bg-gray-900 text-white p-4 rounded font-bold">
+          <span>Total do Pedido (com frete)</span>
+          <span id="detSaleTotal" class="text-brand-gold text-lg"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+  <script>
+    // Catálogo 100% Restaurado
+    const PRODUCTS = [
+      { id: 'p1', category: 'Feminina', name: 'Calça Jeans Wide Leg Plus Size', price: 159.90, oldPrice: 199.90, promo: true, image: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=600&auto=format&fit=crop', sizes: ['42', '44', '46', '48'], desc: 'Calça jeans wide leg com elastano, caimento perfeito e toque super macio.' },
+      { id: 'p2', category: 'Feminina', name: 'Vestido Longo Floral Primavera', price: 129.90, oldPrice: null, promo: false, image: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=600&auto=format&fit=crop', sizes: ['P', 'M', 'G', 'GG'], desc: 'Vestido longo leve, ideal para dias ensolarados.' },
+      { id: 'p3', category: 'Feminina', name: 'Conjunto Jeans Cropped + Calça', price: 189.90, oldPrice: 229.90, promo: true, image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=600&auto=format&fit=crop', sizes: ['38', '40', '42', '44'], desc: 'Conjunto completo em jeans escuro.' },
+      { id: 'p4', category: 'Calçados', name: 'Tênis Casual Court Black/White', price: 249.90, oldPrice: null, promo: false, image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600&auto=format&fit=crop', sizes: ['35', '36', '37', '38', '39', '40'], desc: 'Tênis versátil estilo urbano.' },
+      { id: 'p5', category: 'Infantil', name: 'Conjunto Infantil Menino Casual', price: 89.90, oldPrice: 109.90, promo: true, image: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=600&auto=format&fit=crop', sizes: ['2', '4', '6', '8'], desc: 'Conjunto infantil confortável 100% algodão.' },
+      { id: 'p6', category: 'Fitness', name: 'Conjunto Legging + Top Fitness', price: 119.90, oldPrice: null, promo: false, image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=600&auto=format&fit=crop', sizes: ['P', 'M', 'G'], desc: 'Tecido de alta compressão.' },
+      { id: 'p7', category: 'Masculina', name: 'Camiseta Básica Algodão Premium', price: 59.90, oldPrice: 79.90, promo: true, image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=600&auto=format&fit=crop', sizes: ['P', 'M', 'G', 'GG'], desc: 'Camiseta masculina em algodão.' },
+      { id: 'p8', category: 'Feminina', name: 'Calça Jeans Skinny Cintura Alta', price: 139.90, oldPrice: null, promo: false, image: 'https://images.unsplash.com/photo-1584273143981-41c073dfe8f8?q=80&w=600&auto=format&fit=crop', sizes: ['36', '38', '40', '42'], desc: 'Modelagem skinny que valoriza a silhueta.' }
+    ];
+
+    let cart = [];
+    let currentUser = null;
+    let selectedSizes = {};
+    let activeCategory = 'Todos';
+    let currentProd = null;
+    let selectedSizeModal = '';
+    let freteAtual = 0.00;
+    let formaPagto = 'pix';
+
+    let mockClientes = [
+      { id: 1, name: 'Hercília Campos', cpf: '333.222.111-99', phone: '16991123344', email: 'hercilia@email.com' },
+      { id: 2, name: 'Carlos Eduardo', cpf: '111.222.333-44', phone: '16999998888', email: 'carlos@email.com' }
+    ];
+    let mockVendas = [
+      { 
+        id: 1001, clientId: 1, clientName: 'Hercília Campos', date: '01/10/2026',
+        items: [{name: 'Vestido Longo Floral', size: 'M', qty: 1, price: 129.90}],
+        envio: 'Motoboy Local', address: 'Rua das Flores, 123 - Centro, Franca - SP',
+        total: 139.90, payment: 'PIX', status: 'Aprovado'
+      }
+    ];
+    let mockParcelas = [
+      {
+        saleId: 1002, clientId: 2, clientName: 'Carlos Eduardo', phone: '16999998888',
+        valorParcela: 95.00, vencimento: '05/10/2026', parcelaAtual: 1, totalParcelas: 2, status: 'Pendente'
+      }
+    ];
+
+    let currentSlide = 0;
+    const totalSlides = 4; // Restaurado para 4 slides
+
+    function init() {
+      lucide.createIcons();
+      
+      const savedUser = localStorage.getItem('marquinho_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        document.getElementById('userGreeting').innerText = currentUser.name.split(' ')[0];
+        document.getElementById('userGreeting').classList.remove('hidden');
+      }
+
+      const sClientes = localStorage.getItem('marquinho_clientes');
+      const sVendas = localStorage.getItem('marquinho_vendas');
+      const sParcelas = localStorage.getItem('marquinho_parcelas');
+      
+      if(sClientes) mockClientes = JSON.parse(sClientes);
+      if(sVendas) mockVendas = JSON.parse(sVendas);
+      if(sParcelas) mockParcelas = JSON.parse(sParcelas);
+
+      updateCart();
+      renderProducts(PRODUCTS);
+      renderAdminTables();
+      setInterval(nextSlide, 5000);
+    }
+
+    function updateCarousel() {
+      document.getElementById('carouselSlides').style.transform = `translateX(-${currentSlide * 100}%)`;
+      document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
+        if(index === currentSlide) {
+          dot.classList.add('bg-brand-gold', 'w-8');
+          dot.classList.remove('bg-white', 'bg-opacity-50', 'w-2');
+        } else {
+          dot.classList.remove('bg-brand-gold', 'w-8');
+          dot.classList.add('bg-white', 'bg-opacity-50', 'w-2');
+        }
+      });
+    }
+    function nextSlide() { currentSlide = (currentSlide + 1) % totalSlides; updateCarousel(); }
+    function prevSlide() { currentSlide = (currentSlide - 1 + totalSlides) % totalSlides; updateCarousel(); }
+    function goToSlide(index) { currentSlide = index; updateCarousel(); }
+
+    function filterCategory(cat) { 
+      activeCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        const txt = btn.innerText.trim();
+        const match = (cat === 'Promocoes' && txt.includes('Promoções')) || (txt.toLowerCase() === cat.toLowerCase());
+        if(match) {
+          btn.classList.replace('bg-white', 'bg-brand-black');
+          btn.classList.replace('text-gray-600', 'text-white');
+          btn.classList.replace('text-amber-600', 'text-white');
+        } else {
+          btn.classList.replace('bg-brand-black', 'bg-white');
+          btn.classList.replace('text-white', 'text-gray-600');
+          if(txt.includes('Promoções')) btn.classList.add('text-amber-600', 'font-semibold');
+        }
+      });
+
+      let filtered = cat === 'Todos' ? PRODUCTS : PRODUCTS.filter(p => p.category === cat || (cat === 'Promocoes' && p.promo));
+      renderProducts(filtered);
+    }
+
+    function renderProducts(items) {
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = items.length === 0 ? '<p class="col-span-full text-center text-gray-500 py-10">Nenhum produto encontrado.</p>' : '';
+      items.forEach(p => {
+        if(!selectedSizes[p.id]) selectedSizes[p.id] = p.sizes[0];
+        const szs = p.sizes.map(s => `<button onclick="event.stopPropagation(); selSize('${p.id}', '${s}')" class="text-[10px] px-2 py-1 border transition-all ${selectedSizes[p.id] === s ? 'bg-brand-black text-white border-brand-black' : 'border-gray-200 text-gray-600'}">${s}</button>`).join('');
+        const badge = p.promo ? '<span class="absolute top-2 left-2 bg-brand-gold text-black text-[9px] uppercase font-bold px-2 py-1">Promoção</span>' : '';
+        
+        const card = document.createElement('div');
+        card.className = 'group bg-white flex flex-col shadow-sm border border-gray-100 cursor-pointer';
+        card.onclick = () => openDetail(p.id);
+        card.innerHTML = `
+          <div class="relative aspect-[3/4] bg-gray-100 overflow-hidden">
+            <img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            ${badge}
+          </div>
+          <div class="p-4 flex flex-col flex-1">
+            <h3 class="text-sm font-semibold text-gray-800 mb-1">${p.name}</h3>
+            <div class="flex items-center gap-2 mb-3">
+              <p class="text-brand-black font-bold text-lg">R$ ${p.price.toFixed(2).replace('.',',')}</p>
+              ${p.oldPrice ? `<p class="text-xs text-gray-400 line-through">R$ ${p.oldPrice.toFixed(2).replace('.',',')}</p>` : ''}
+            </div>
+            <div class="mt-auto" onclick="event.stopPropagation()">
+              <div class="flex flex-wrap gap-1.5 mb-4">${szs}</div>
+              <button onclick="addToCart('${p.id}')" class="w-full bg-brand-black text-white py-2.5 text-xs font-bold uppercase hover:bg-gray-800">Comprar</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function selSize(pid, s) { selectedSizes[pid] = s; filterCategory(activeCategory); }
+    
+    function openDetail(pid) {
+      currentProd = PRODUCTS.find(p => p.id === pid);
+      selectedSizeModal = selectedSizes[pid];
+      document.getElementById('modalProdImg').src = currentProd.image;
+      document.getElementById('modalProdName').innerText = currentProd.name;
+      document.getElementById('modalProdCategory').innerText = currentProd.category;
+      document.getElementById('modalProdPrice').innerText = `R$ ${currentProd.price.toFixed(2).replace('.',',')}`;
+      
+      const badge = document.getElementById('modalProdBadge');
+      const oldPrice = document.getElementById('modalProdOldPrice');
+      if(currentProd.promo && currentProd.oldPrice) {
+        badge.classList.remove('hidden');
+        oldPrice.innerText = `R$ ${currentProd.oldPrice.toFixed(2).replace('.',',')}`;
+        oldPrice.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+        oldPrice.classList.add('hidden');
+      }
+
+      document.getElementById('modalProdDesc').innerText = currentProd.desc;
+      renderModalSizes();
+      document.getElementById('productDetailModal').classList.remove('hidden');
+    }
+
+    function renderModalSizes() {
+      document.getElementById('modalProdSizes').innerHTML = currentProd.sizes.map(s => {
+        const c = selectedSizeModal === s ? 'bg-brand-black text-white border-brand-black' : 'border-gray-200 text-gray-700';
+        return `<button onclick="selSizeModal('${s}')" class="px-4 py-2 border text-xs font-bold transition-all ${c}">${s}</button>`;
+      }).join('');
+    }
+    function selSizeModal(s) { selectedSizeModal = s; selectedSizes[currentProd.id] = s; renderModalSizes(); }
+    function closeProductDetailModal() { document.getElementById('productDetailModal').classList.add('hidden'); }
+
+    // -- Carrinho --
+    function addToCart(pid) {
+      const p = PRODUCTS.find(x => x.id === pid);
+      cart.push({...p, size: selectedSizes[pid], qty: 1});
+      updateCart(); toggleCartDrawer(true); showToast('Adicionado à sacola!');
+    }
+    function addCurrentProductToCart() {
+      if(!currentProd) return;
+      cart.push({...currentProd, size: selectedSizeModal, qty: 1});
+      updateCart(); closeProductDetailModal(); toggleCartDrawer(true); showToast('Adicionado à sacola!');
+    }
+    function removeItem(idx) { cart.splice(idx, 1); updateCart(); }
+    function toggleCartDrawer(show) { document.getElementById('cartDrawer').classList.toggle('hidden', !show); }
+    
+    function updateCart() {
+      const list = document.getElementById('cartItemsList');
+      const badge = document.getElementById('cartBadge');
+      const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+      badge.innerText = totalQty;
+      badge.classList.toggle('hidden', totalQty === 0);
+
+      localStorage.setItem('marquinho_cart', JSON.stringify(cart));
+
+      if(cart.length === 0) {
+        list.innerHTML = '<div class="text-center py-10 text-gray-400 text-sm">Sacola vazia.</div>';
+        document.getElementById('cartTotal').innerText = 'R$ 0,00';
+        return;
+      }
+
+      let sub = 0;
+      list.innerHTML = cart.map((i, idx) => {
+        sub += i.price * i.qty;
+        return `<div class="py-3 flex justify-between items-center text-sm">
+                  <div><span class="font-bold text-xs">${i.name}</span><p class="text-[10px] text-gray-500">Tam: ${i.size}</p></div>
+                  <div class="flex items-center gap-3"><b>R$ ${i.price.toFixed(2).replace('.',',')}</b><button onclick="removeItem(${idx})" class="text-red-500 hover:text-red-700"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>
+                </div>`;
+      }).join('');
+      document.getElementById('cartTotal').innerText = `R$ ${(sub + freteAtual).toFixed(2).replace('.',',')}`;
+      lucide.createIcons();
+    }
+
+    // -- Identificação e Checkout --
+    function toggleMobileMenu(show) { document.getElementById('mobileMenuDrawer').classList.toggle('hidden', !show); }
+    function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); }
+    function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
+    
+    function registrarOuLogar() {
+      const name = document.getElementById('authName').value;
+      const phone = document.getElementById('authPhone').value;
+      const cpf = document.getElementById('authCpf').value;
+      const email = document.getElementById('authEmail').value;
+      if(!name || !phone || !cpf || !email) return showToast('Preencha todos os campos.');
+      
+      let user = mockClientes.find(c => c.cpf === cpf);
+      if(!user) {
+        user = { id: Date.now(), name, phone, email, cpf };
+        mockClientes.push(user);
+        localStorage.setItem('marquinho_clientes', JSON.stringify(mockClientes));
+      }
+      currentUser = user;
+      localStorage.setItem('marquinho_user', JSON.stringify(currentUser));
+      document.getElementById('userGreeting').innerText = name.split(' ')[0];
+      closeAuthModal();
+      showToast('Autenticado com sucesso!');
+    }
+
+    function handleCheckout() {
+      if(cart.length === 0) return showToast('Sacola vazia.');
+      if(!currentUser) { toggleCartDrawer(false); openAuthModal(); return showToast('Identifique-se primeiro.'); }
+      toggleCartDrawer(false); document.getElementById('checkoutModal').classList.remove('hidden'); atualizarFreteSistema();
+    }
+    function closeCheckoutModal() { document.getElementById('checkoutModal').classList.add('hidden'); }
+
+    function atualizarFreteSistema() {
+      const tipo = document.getElementById('chkTipoEnvio').value;
+      freteAtual = tipo === 'retirada' ? 0 : (tipo === 'motoboy' ? 10.00 : 15.00);
+      document.getElementById('boxEndereco').classList.toggle('hidden', tipo === 'retirada');
+      document.getElementById('freteCalculadoBox').innerText = `Frete Aplicado: R$ ${freteAtual.toFixed(2).replace('.',',')}`;
+      updateCart();
+    }
+
+    function setPagamento(m) {
+      formaPagto = m;
+      ['pix', 'cartao', 'parcelado'].forEach(x => {
+        const btn = document.getElementById(`pay-${x}`);
+        if(x === m) btn.className = 'py-2 border bg-black text-white text-xs font-bold uppercase rounded transition-colors';
+        else btn.className = x === 'parcelado' ? 'py-2 border text-amber-700 border-amber-600 text-xs font-bold uppercase rounded transition-colors' : 'py-2 border text-gray-700 text-xs font-bold uppercase rounded transition-colors';
+      });
+      document.getElementById('boxParcelas').classList.toggle('hidden', m !== 'parcelado');
+    }
+
+    function finalizarPedidoOficial() {
+      const tipoEnvio = document.getElementById('chkTipoEnvio').value;
+      const cep = document.getElementById('chkCep').value;
+      const bairro = document.getElementById('chkBairro').value;
+      const ruaNum = document.getElementById('chkRuaNum').value;
+
+      let enderecoFinal = "Retirada na Loja Física";
+      if (tipoEnvio !== 'retirada') {
+        if (!bairro || !ruaNum) return showToast('Preencha Bairro e Rua/Número para a entrega.');
+        enderecoFinal = `${ruaNum}, ${bairro} - Franca/SP (CEP: ${cep})`;
+      }
+
+      const sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+      const totalFinal = sub + freteAtual;
+      const saleId = Date.now();
+      
+      const novaVenda = { 
+        id: saleId, clientId: currentUser.id, clientName: currentUser.name, date: new Date().toLocaleDateString('pt-BR'),
+        items: [...cart], envio: tipoEnvio === 'motoboy' ? 'Motoboy' : (tipoEnvio === 'uber' ? 'Uber Flash' : 'Retirada'), 
+        address: enderecoFinal, total: totalFinal, payment: formaPagto, 
+        status: formaPagto === 'parcelado' ? 'Agendado' : 'Aprovado' 
+      };
+      
+      mockVendas.unshift(novaVenda);
+      localStorage.setItem('marquinho_vendas', JSON.stringify(mockVendas));
+
+      let textoPagamento = formaPagto.toUpperCase();
+      if(formaPagto === 'parcelado') {
+        const parcelas = parseInt(document.getElementById('chkQtdParcelas').value);
+        const valorPorParcela = totalFinal / parcelas;
+        textoPagamento = `PARCELADO EM ${parcelas}x (Débito Programado)`;
+        
+        for(let i=1; i<=parcelas; i++) {
+          let venc = new Date(); venc.setMonth(venc.getMonth() + i);
+          mockParcelas.push({
+            saleId: saleId, clientId: currentUser.id, clientName: currentUser.name, phone: currentUser.phone,
+            valorParcela: valorPorParcela, vencimento: venc.toLocaleDateString('pt-BR'), parcelaAtual: i, totalParcelas: parcelas, status: 'Pendente'
+          });
+        }
+        localStorage.setItem('marquinho_parcelas', JSON.stringify(mockParcelas));
+      }
+
+      renderAdminTables();
+      
+      let texto = `*NOVO PEDIDO - MARQUINHO MODAS* 🛍️\n\n*Cliente:* ${currentUser.name}\n*WhatsApp:* ${currentUser.phone}\n\n*ITENS:*\n`;
+      cart.forEach(item => { texto += `- ${item.qty}x ${item.name} (Tam: ${item.size})\n`; });
+      texto += `\n*TOTAL:* R$ ${totalFinal.toFixed(2).replace('.',',')}\n*Pagamento:* ${textoPagamento}\n*Envio:* ${novaVenda.envio}\n`;
+      if (tipoEnvio !== 'retirada') texto += `*Endereço:* ${enderecoFinal}\n`;
+      
+      cart = []; updateCart(); closeCheckoutModal(); showToast('A redirecionar para o WhatsApp...');
+      setTimeout(() => { window.open(`https://api.whatsapp.com/send?phone=5516993938038&text=${encodeURIComponent(texto)}`, '_blank'); }, 1000);
+    }
+
+    // -- Painel Admin --
+    function triggerAdminAccess() { document.getElementById('adminAuthModal').classList.remove('hidden'); }
+    function closeAdminAuthModal() { document.getElementById('adminAuthModal').classList.add('hidden'); }
+    function verifyAdminPassword() {
+      if(document.getElementById('adminPassword').value === 'admin123') { closeAdminAuthModal(); document.getElementById('adminModal').classList.remove('hidden'); } 
+      else { showToast('Senha incorreta'); }
+    }
+    function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
+
+    function switchTab(t) {
+      ['vendas', 'clientes', 'parcelas'].forEach(x => {
+        document.getElementById(`tab-content-${x}`).classList.add('hidden');
+        document.getElementById(`t-${x}`).className = 'px-6 py-3 text-gray-600 whitespace-nowrap';
+      });
+      document.getElementById(`tab-content-${t}`).classList.remove('hidden');
+      document.getElementById(`t-${t}`).className = 'px-6 py-3 bg-white text-black border-b-2 border-brand-gold whitespace-nowrap font-bold';
+    }
+
+    function renderAdminTables() {
+      document.getElementById('tableVendasBody').innerHTML = mockVendas.map(v => 
+        `<tr><td class="p-3 text-gray-500">${v.date}</td><td class="p-3 font-semibold">${v.clientName}</td><td class="p-3 uppercase text-[10px]">${v.envio}</td><td class="p-3 font-bold">R$ ${v.total.toFixed(2).replace('.',',')}</td><td class="p-3"><span class="bg-black text-white text-[10px] px-2 py-0.5 rounded">${v.status}</span></td><td class="p-3 text-center"><button onclick="viewSale(${v.id})" class="text-[10px] border border-brand-gold text-brand-gold font-bold px-3 py-1 rounded hover:bg-brand-gold hover:text-black">Detalhes</button></td></tr>`
+      ).join('');
+      
+      document.getElementById('tableClientesBody').innerHTML = mockClientes.map(c => 
+        `<tr><td class="p-3"><span class="text-gray-400 text-[10px]">#${c.id}</span><br><b>${c.name}</b></td><td class="p-3">${c.cpf}</td><td class="p-3 text-green-700 font-bold">${c.phone}</td><td class="p-3">${c.email}</td></tr>`
+      ).join('');
+
+      document.getElementById('tableParcelasBody').innerHTML = mockParcelas.map(p => {
+        const msgText = encodeURIComponent(`Olá ${p.clientName.split(' ')[0]}, passando para lembrar da sua parcela de R$ ${p.valorParcela.toFixed(2).replace('.',',')} na Marquinho Modas. Vencimento: ${p.vencimento}.`);
+        return `<tr><td class="p-3 font-semibold">${p.clientName}</td><td class="p-3 font-bold text-xs">${p.parcelaAtual}/${p.totalParcelas}</td><td class="p-3 font-bold">R$ ${p.valorParcela.toFixed(2).replace('.',',')}</td><td class="p-3 text-red-600 font-bold">${p.vencimento}</td><td class="p-3"><a href="https://api.whatsapp.com/send?phone=55${p.phone}&text=${msgText}" target="_blank" class="bg-green-600 text-white text-[10px] px-2 py-1 rounded font-bold uppercase flex items-center justify-center gap-1 w-max"><i data-lucide="message-circle" class="w-3 h-3"></i> Lembrete WPP</a></td></tr>`
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function viewSale(id) {
+      const sale = mockVendas.find(v => v.id === id);
+      document.getElementById('detSaleId').innerText = `#${sale.id}`;
+      document.getElementById('detSaleClient').innerText = sale.clientName;
+      document.getElementById('detSalePay').innerText = sale.payment;
+      document.getElementById('detSaleAddress').innerText = sale.address;
+      document.getElementById('detSaleTotal').innerText = `R$ ${sale.total.toFixed(2).replace('.',',')}`;
+      
+      document.getElementById('detSaleItems').innerHTML = sale.items.map(i => 
+        `<li class="py-2 flex justify-between"><div><p class="font-bold">${i.name}</p><p class="text-[10px] text-gray-500">Tam: ${i.size} | Qtd: ${i.qty}</p></div><p class="font-bold">R$ ${(i.price * i.qty).toFixed(2).replace('.',',')}</p></li>`
+      ).join('');
+      
+      document.getElementById('adminSaleDetailModal').classList.remove('hidden');
+    }
+    function closeSaleDetail() { document.getElementById('adminSaleDetailModal').classList.add('hidden'); }
+
+    function showToast(m) {
+      const c = document.getElementById('toastContainer');
+      const t = document.createElement('div');
+      t.className = 'bg-black text-white px-4 py-3 shadow text-sm border border-brand-gold/40 flex items-center gap-2';
+      t.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-brand-gold"></i> ${m}`;
+      c.appendChild(t); lucide.createIcons();
+      setTimeout(() => t.remove(), 3000);
+    }
+    
+    window.onload = init;
+  </script>
+</body>
+</html>
